@@ -1,0 +1,164 @@
+{
+  "executed_on": "2026-10-27",
+  "source": "Deterministic synthetic samples; 600 rows each, seed 42; not real-world performance evidence",
+  "machine": {
+    "cpu": "Intel i5-1135G7",
+    "physical_cores": 4,
+    "logical_processors": 8,
+    "ram_bytes": 16889192448
+  },
+  "results": {
+    "classification": {
+      "selected_algorithm": "forest",
+      "dataset_fingerprint": "33b746052c1ffd89db067583c2c598c9268a79f8770a282768183cde0ed13b6b",
+      "validation": {
+        "accuracy": 0.925,
+        "balanced_accuracy": 0.9249999999999999,
+        "f1_macro": 0.9249084249084248,
+        "f1_weighted": 0.924908424908425,
+        "roc_auc": 0.9852083333333332
+      },
+      "final_holdout": {
+        "accuracy": 0.8833333333333333,
+        "balanced_accuracy": 0.8833333333333334,
+        "f1_macro": 0.8824410469980091,
+        "f1_weighted": 0.882441046998009,
+        "roc_auc": 0.9762500000000001
+      },
+      "final_test_evaluations": 1,
+      "training_duration_s": 1.5505585999926552,
+      "prediction_latency_ms": 93.3019999647513,
+      "artifact_bytes": 74233,
+      "memory": {
+        "rss_start_bytes": 177012736,
+        "rss_end_bytes": 178139136,
+        "note": "Process resident memory snapshots, not peak memory or isolated per-model usage"
+      },
+      "candidates": [
+        {
+          "algorithm": "baseline",
+          "parameters": {},
+          "status": "succeeded",
+          "duration_s": 0.05985260003944859,
+          "fit_s": 0.012327799980994314,
+          "error": null
+        },
+        {
+          "algorithm": "linear",
+          "parameters": {
+            "strength": 1.0
+          },
+          "status": "succeeded",
+          "duration_s": 0.07071980001637712,
+          "fit_s": 0.026794000004883856,
+          "error": null
+        },
+        {
+          "algorithm": "tree",
+          "parameters": {
+            "max_depth": 6
+          },
+          "status": "succeeded",
+          "duration_s": 0.071708099974785,
+          "fit_s": 0.022900099982507527,
+          "error": null
+        },
+        {
+          "algorithm": "forest",
+          "parameters": {
+            "max_depth": 8
+          },
+          "status": "succeeded",
+          "duration_s": 0.12515249999705702,
+          "fit_s": 0.09263019997160882,
+          "error": null
+        }
+      ],
+      "environment": {
+        "python": "3.13.3",
+        "sklearn": "1.6.1",
+        "numpy": "2.2.6",
+        "pandas": "2.2.3",
+        "scipy": "1.15.3",
+        "joblib": "1.4.2",
+        "platform": "Windows-11-10.0.26200-SP0",
+        "mlforge": "1.0.0"
+      }
+    },
+    "regression": {
+      "selected_algorithm": "linear",
+      "dataset_fingerprint": "355e2de681c58791cea57743671d36276a05da145322e8e5b773adcf9789baf8",
+      "validation": {
+        "mae": 18.557068927166892,
+        "rmse": 31.16664957608314,
+        "r2": 0.8895787148663274,
+        "median_absolute_error": 13.372145563190736
+      },
+      "final_holdout": {
+        "mae": 16.71982213986739,
+        "rmse": 23.020983655236304,
+        "r2": 0.9427416308350626,
+        "median_absolute_error": 13.847664586670788
+      },
+      "final_test_evaluations": 1,
+      "training_duration_s": 1.2106331000104547,
+      "prediction_latency_ms": 14.659799984656274,
+      "artifact_bytes": 2188,
+      "memory": {
+        "rss_start_bytes": 179658752,
+        "rss_end_bytes": 179929088,
+        "note": "Process resident memory snapshots, not peak memory or isolated per-model usage"
+      },
+      "candidates": [
+        {
+          "algorithm": "baseline",
+          "parameters": {},
+          "status": "succeeded",
+          "duration_s": 0.02014959999360144,
+          "fit_s": 0.012311200029216707,
+          "error": null
+        },
+        {
+          "algorithm": "linear",
+          "parameters": {
+            "strength": 1.0
+          },
+          "status": "succeeded",
+          "duration_s": 0.022607100021559745,
+          "fit_s": 0.01369299995712936,
+          "error": null
+        },
+        {
+          "algorithm": "tree",
+          "parameters": {
+            "max_depth": 6
+          },
+          "status": "succeeded",
+          "duration_s": 0.041020399949047714,
+          "fit_s": 0.02264200005447492,
+          "error": null
+        },
+        {
+          "algorithm": "forest",
+          "parameters": {
+            "max_depth": 8
+          },
+          "status": "succeeded",
+          "duration_s": 0.23311790003208444,
+          "fit_s": 0.21523779997369274,
+          "error": null
+        }
+      ],
+      "environment": {
+        "python": "3.13.3",
+        "sklearn": "1.6.1",
+        "numpy": "2.2.6",
+        "pandas": "2.2.3",
+        "scipy": "1.15.3",
+        "joblib": "1.4.2",
+        "platform": "Windows-11-10.0.26200-SP0",
+        "mlforge": "1.0.0"
+      }
+    }
+  }
+}

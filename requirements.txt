@@ -1,0 +1,12 @@
+numpy==2.2.6
+pandas==2.2.3
+scipy==1.15.3
+scikit-learn==1.6.1
+joblib==1.4.2
+streamlit==1.45.1
+fastapi==0.115.12
+pydantic==2.11.5
+uvicorn==0.34.3
+python-multipart==0.0.20
+filelock==3.18.0
+psutil==7.0.0

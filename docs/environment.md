@@ -1,0 +1,12 @@
+# Environment audit — 27 October 2026
+
+- Created a separate project exactly at **`D:\ml forge`**. TinyLink AI, Image Entropy Analyzer and other existing projects were preserved.
+- Actual system: Windows 11; Intel i5-1135G7, four physical/eight logical cores; 16,889,192,448 bytes physical RAM (approximately 16 GB). Python 3.13.3, Git and Node 24.15.0 were available. CPU-only execution was used.
+- No MLForge directory or existing owned GitHub MLForge repository was found. Authenticated repository discovery used existing Git credentials in memory without displaying/storing tokens. Existing scratch learning repositories cover individual algorithms, not this end-to-end platform, so a new implementation avoids overwriting them.
+- Both supplied resume PDFs were accessible through Google Drive and were read before implementation. The public portfolio returned HTTP 200, and local portfolio source/remote were inspected. No personal resume text or contact details were copied into the project, and no résumé claims are used as project-performance evidence.
+- The active image-analysis workspace and local portfolio are independent projects. No changes were made to those sources. No hosted MLForge repository/demo link was assumed. This task prepares a local repository and CI; publication remains a separate action.
+- System Python had some relevant libraries, but an isolated **`.venv` in MLForge** was created. Runtime/development libraries are pinned; no system Python, unrelated environment or competing toolchain was upgraded. No GPU or external database was used.
+- Architecture selected: Streamlit UI, FastAPI, shared scikit-learn service layer, SQLite and app-owned local artifacts. XGBoost/MLflow/SHAP were not required because bounded standard estimators, lightweight metadata and permutation importance meet the intended local workflow.
+- Browser verification used the already available Playwright/Chromium tooling to check the real local UI, REST routes and persisted artifacts. Node/Playwright are verification tooling, not MLForge runtime requirements. The repeatable Python test suite includes Streamlit AppTest and real background worker processes.
+
+The supplied host constraints matched the observed CPU. Access to the resumes, public portfolio and GitHub audit was available, so no audit blocker remained. Real-data generalization, authentication/multi-user hosting, ground-truth monitoring and public deployment are outside the implemented local release and are not claimed.

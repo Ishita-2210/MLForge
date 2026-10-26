@@ -1,0 +1,16 @@
+.venv/
+.mlforge/
+.pytest_cache/
+.ruff_cache/
+__pycache__/
+*.egg-info/
+build/
+dist/
+.env
+*.db
+*.db-wal
+*.db-shm
+*.joblib
+*.log
+playwright-report/
+test-results/

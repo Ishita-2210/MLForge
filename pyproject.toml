@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools==80.9.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mlforge-local"
+version = "1.0.0"
+description = "Local CPU-first tabular ML workbench with leakage-safe experiments, registry, inference and monitoring"
+requires-python = ">=3.11,<3.14"
+dynamic = ["dependencies"]
+
+[project.scripts]
+mlforge = "mlforge.cli:main"
+
+[tool.setuptools.dynamic]
+dependencies = {file = ["requirements.txt"]}
+
+[tool.setuptools.packages.find]
+include = ["mlforge*", "app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["error::RuntimeWarning"]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+extend-exclude = ["build", ".venv"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B"]
+
