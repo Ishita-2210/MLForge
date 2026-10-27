@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import uuid
+from html import escape
 from pathlib import Path
 
 import streamlit as st
@@ -25,9 +26,11 @@ def forge() -> Forge:
 
 
 def heading(eyebrow: str, title: str, description: str) -> None:
-    st.caption(eyebrow.upper())
-    st.title(title)
-    st.write(description)
+    st.html(
+        '<div class="page-heading">'
+        f'<div class="page-eyebrow">{escape(eyebrow.upper())}</div>'
+        f"<h1>{escape(title)}</h1><p>{escape(description)}</p></div>"
+    )
 
 
 def choose_dataset():

@@ -18,6 +18,9 @@ dependencies = {file = ["requirements.txt"]}
 [tool.setuptools.packages.find]
 include = ["mlforge*", "app*"]
 
+[tool.setuptools.package-data]
+"app.ui" = ["assets/*.css", "assets/fonts/*.woff2", "assets/fonts/LICENSE.txt"]
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-q"

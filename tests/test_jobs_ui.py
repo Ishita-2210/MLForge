@@ -81,9 +81,9 @@ def test_ui_complete_classification_workflow(tmp_path, monkeypatch):
     home = tmp_path / "ui"
     monkeypatch.setenv("MLFORGE_HOME", str(home))
     at = AppTest.from_file(str(ROOT / "streamlit_app.py"), default_timeout=30).run()
-    page(at, "Datasets")
     button(at, "Load classification sample").click().run()
     assert not at.exception
+    assert at.sidebar.radio[0].value == "Experiment builder"
     page(at, "Data profiling")
     page(at, "Experiment builder")
     button(at, "Validate and review").click().run()

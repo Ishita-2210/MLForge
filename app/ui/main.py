@@ -1,80 +1,178 @@
 from __future__ import annotations
 
 import os
+from html import escape
 
-import pandas as pd
 import streamlit as st
 
-from app.ui.common import forge, heading
+from app.ui.common import forge
 from app.ui.data_views import datasets, profiling
+from app.ui.design import apply_theme, brand, card_intro, icon, pipeline_art, section, topbar
 from app.ui.experiment_views import builder, details
 from app.ui.model_views import playground, registry
 from app.ui.monitor_views import monitoring
 from mlforge.hosting import hosted_demo
 
 
+def navigate(page: str) -> None:
+    st.session_state.workspace_page = page
+
+
+def load_sample(task: str) -> None:
+    try:
+        record = forge().sample(task)
+        st.session_state.selected_dataset = record["id"]
+        navigate("Experiment builder")
+    except Exception as exc:
+        from app.ui.common import show_error
+
+        show_error(exc)
+
+
 def overview() -> None:
-    heading(
-        "HOSTED DEMO · CPU READY" if hosted_demo() else "LOCAL FIRST · CPU READY",
-        "From raw data to a model you can trust",
-        "A focused tabular ML workbench: validate data, compare models honestly, register a pipeline, and observe its predictions.",
-    )
     f = forge()
     f.recover_jobs()
     counts = f.store.overview()
-    for col, label, key in zip(
-        st.columns(4),
-        ["Datasets", "Experiments", "Successful runs", "Registered models"],
-        ["datasets", "experiments", "succeeded", "models"],
-        strict=False,
-    ):
-        col.metric(label, counts[key])
-    st.divider()
-    for col, step, title, text in zip(
-        st.columns(3),
-        ["01 / UNDERSTAND", "02 / EXPERIMENT", "03 / DELIVER"],
-        ["Start with the data", "Keep evaluation honest", "Ship a traceable pipeline"],
-        [
-            "Upload CSV or load a synthetic sample. Inspect missingness, types and warnings.",
-            "Choose features and a split that matches your problem. Fit preprocessing only on training rows.",
-            "Review validation and holdout results, register a version, and make predictions from the same persisted pipeline.",
-        ],
-        strict=False,
-    ):
-        with col:
-            st.caption(step)
-            st.subheader(title)
-            st.write(text)
-    st.info(
-        "First run: open Datasets → Load classification sample → Experiment builder → Validate and review → Start reviewed experiment."
+    with st.container(key="overview-hero"):
+        intro, illustration = st.columns([1.35, 1], gap="medium", vertical_alignment="center")
+        with intro:
+            st.html(
+                '<div class="hero-copy"><div class="hero-eyebrow">LESS FRICTION. MORE DISCOVERY.</div>'
+                "<h1>Your next model<br><span>starts here.</span></h1>"
+                "<p>Turn your data into something useful. Explore, experiment, and ship a model "
+                "you understand. All in one workspace.</p></div>"
+            )
+            primary, secondary = st.columns([1.1, 1], gap="small")
+            primary.button(
+                "New experiment",
+                type="primary",
+                icon=":material/add:",
+                use_container_width=True,
+                on_click=navigate,
+                args=("Experiment builder" if counts["datasets"] else "Datasets",),
+            )
+            secondary.button(
+                "View registry",
+                icon=":material/arrow_forward:",
+                use_container_width=True,
+                on_click=navigate,
+                args=("Model registry",),
+            )
+            st.html(
+                f'<div class="hero-note">{icon("cpu", 12)} CPU powered '
+                "&nbsp;·&nbsp; No API keys needed</div>"
+            )
+        with illustration:
+            pipeline_art()
+    with st.container(key="overview-metrics"):
+        for col, label, key in zip(
+            st.columns(4),
+            ["Datasets", "Experiments", "Successful runs", "Registered models"],
+            ["datasets", "experiments", "succeeded", "models"],
+            strict=False,
+        ):
+            col.metric(label, counts[key])
+    section(
+        "Make your first move",
+        "Bring your own data, or explore with a ready-to-run synthetic dataset.",
+        "BUILT FOR EXPLORATION",
     )
-    st.subheader("Recent experiments")
-    recent = f.store.list("experiment", 5)
-    if recent:
-        st.dataframe(
-            pd.DataFrame(
-                [
-                    {k: r.get(k) for k in ("name", "status", "created_at", "progress")}
-                    for r in recent
-                ]
-            ),
-            use_container_width=True,
-            hide_index=True,
+    upload, classification, regression = st.columns(3, gap="medium")
+    with upload, st.container(key="start-upload"):
+        card_intro(
+            "upload",
+            "Bring your own data",
+            "A CSV is all you need. We’ll help you inspect the rest.",
         )
-    else:
-        st.write("Your workspace is empty. Counts and metrics appear after you run real workflows.")
-    st.caption("Classification & regression · scikit-learn pipelines · no external model APIs")
+        st.button(
+            "Import a dataset",
+            icon=":material/arrow_forward:",
+            use_container_width=True,
+            on_click=navigate,
+            args=("Datasets",),
+        )
+    with classification, st.container(key="start-classification"):
+        card_intro(
+            "box",
+            "Explore classification",
+            "Predict a category with 600 synthetic rows and mixed feature types.",
+            "blue",
+        )
+        st.button(
+            "Load classification sample",
+            icon=":material/arrow_forward:",
+            use_container_width=True,
+            on_click=load_sample,
+            args=("classification",),
+        )
+    with regression, st.container(key="start-regression"):
+        card_intro(
+            "chart",
+            "Try a regression problem",
+            "Predict a number. Compare real models on a reproducible sample.",
+            "teal",
+        )
+        st.button(
+            "Load regression sample",
+            icon=":material/arrow_forward:",
+            use_container_width=True,
+            on_click=load_sample,
+            args=("regression",),
+        )
+    label, action = st.columns([4, 1], vertical_alignment="center")
+    with label:
+        section("Recent experiments", "Your latest runs, right where you left them.")
+    action.button(
+        "View all runs",
+        type="tertiary",
+        icon=":material/arrow_forward:",
+        on_click=navigate,
+        args=("Training & comparison",),
+        use_container_width=True,
+    )
+    recent = f.store.list("experiment", 5)
+    with st.container(key="overview-history"):
+        if recent:
+            rows = []
+            for record in recent:
+                state = record["status"]
+                state_class = state if state in ("succeeded", "failed", "cancelled") else ""
+                config = record.get("config", {})
+                rows.append(
+                    f"<tr><td>{escape(record['name'])}</td><td>{escape(config.get('task', '—').title())}</td>"
+                    f'<td><span class="state-badge {state_class}">{escape(state.title())}</span></td>'
+                    f"<td>{escape(record['created_at'][:10])}</td></tr>"
+                )
+            st.html(
+                '<table class="experiment-list"><thead><tr><th>EXPERIMENT</th><th>TASK</th>'
+                "<th>STATUS</th><th>CREATED</th></tr></thead><tbody>"
+                + "".join(rows)
+                + "</tbody></table>"
+            )
+        else:
+            st.html(
+                f'<div class="empty-history"><span class="card-icon">{icon("flask", 18)}</span>'
+                "<h3>A clean slate. A little potential.</h3>"
+                "<p>Your experiments will appear here. Load a sample above to get started.</p></div>"
+            )
+    st.html(
+        f'<div class="workspace-footer"><span>{icon("check", 12)} '
+        "Training-only preprocessing. Honest holdout evaluation.</span>"
+        "<span>Made for curious minds. Built on scikit-learn.</span></div>"
+    )
 
 
 def main() -> None:
-    st.set_page_config(page_title="MLForge · Local ML Workbench", page_icon="⚒️", layout="wide")
-    if hosted_demo():
-        st.info(
-            "Hosted demo: isolated temporary workspace for this browser session. Models and history can disappear on restart or reconnection. Use synthetic/public data here; run locally for private data and persistent storage."
-        )
+    st.set_page_config(page_title="MLForge · Your ML Workspace", page_icon="◈", layout="wide")
+    apply_theme()
     with st.sidebar:
-        st.markdown("## ⚒️ MLForge")
-        st.caption("TABULAR ML WORKBENCH")
+        brand()
+        st.html(
+            '<div class="workspace-picker"><span class="workspace-avatar">ML</span><span>'
+            "<strong>Personal workspace</strong>"
+            f"<small>{'Public demo · Temporary session' if hosted_demo() else 'Local · Persistent storage'}</small>"
+            '</span></div><div class="nav-label">WORKSPACE</div>'
+        )
         pages = {
             "Overview": overview,
             "Datasets": datasets,
@@ -85,12 +183,18 @@ def main() -> None:
             "Playground": playground,
             "Monitoring": monitoring,
         }
-        selected = st.radio("Workspace", list(pages), label_visibility="collapsed")
-        st.divider()
-        st.caption(
-            "Temporary session storage · CPU only"
-            if hosted_demo()
-            else "Local storage · CPU only\nOne experiment at a time"
+        selected = st.radio(
+            "Workspace", list(pages), label_visibility="collapsed", key="workspace_page"
+        )
+        st.html(
+            f'<div class="sidebar-runtime"><div class="runtime-title">{icon("cpu", 16)}'
+            "A lighter way to ML</div><p>CPU powered. No model APIs.<br>"
+            + (
+                "Use public or synthetic data.<br>Run locally to keep your history."
+                if hosted_demo()
+                else "Your data stays on this computer.<br>One experiment at a time."
+            )
+            + "</p></div>"
         )
         if hosted_demo():
             st.link_button(
@@ -104,11 +208,18 @@ def main() -> None:
                 file_name="mlforge-local-setup.txt",
                 use_container_width=True,
             )
-            st.caption("The dedicated REST API is included in local mode.")
+            with st.expander("About this demo"):
+                st.info(
+                    "Hosted demo: isolated temporary workspace for this browser session. Models and history can disappear on restart or reconnection. Use synthetic/public data here; run locally for private data and persistent storage. The dedicated REST API is included in local mode."
+                )
         else:
             st.link_button(
                 "Prediction API documentation",
                 os.environ.get("MLFORGE_API_URL", "http://127.0.0.1:8000") + "/docs",
                 use_container_width=True,
             )
+        st.html(
+            '<div class="sidebar-footer">MLForge 1.0 &nbsp; / &nbsp; An open-source workspace</div>'
+        )
+    topbar(selected, hosted_demo())
     pages[selected]()

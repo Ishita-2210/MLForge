@@ -8,7 +8,9 @@ The live demo runs real CPU training and prediction in a temporary browser-sessi
 
 Streamlit provides the browser interface; FastAPI exposes predictions; both call the same independently testable Python services. SQLite stores history and metadata. The complete fitted scikit-learn pipeline is persisted with each model. No GPU, paid service, account, external database, model download or cloud inference is required.
 
-![MLForge's fresh local workspace, with genuine zero-count empty states](docs/assets/overview.png)
+![MLForge's redesigned workspace, with genuine zero-count empty states](docs/assets/overview.png)
+
+The interface includes a responsive dashboard, direct sample-to-experiment actions, a compact icon sidebar and consistent forms/results styling. Inter is bundled locally under the [SIL Open Font License](app/ui/assets/fonts/LICENSE.txt); the interface does not need an external font service.
 
 ## Run on Windows
 
