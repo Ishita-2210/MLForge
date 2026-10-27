@@ -31,7 +31,7 @@ ICONS = {
 def _svg(name: str, size: int = 20) -> str:
     return (
         f'<svg xmlns="http://www.w3.org/2000/svg" width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" '
-        f'stroke="#bca7da" stroke-width="1.65" stroke-linecap="round" '
+        f'stroke="#80679e" stroke-width="1.65" stroke-linecap="round" '
         f'stroke-linejoin="round" aria-hidden="true">{ICONS[name]}</svg>'
     )
 
@@ -107,25 +107,4 @@ def card_intro(name: str, title: str, description: str, tone: str = "violet") ->
     st.html(
         f'<div class="action-card-intro"><span class="card-icon {escape(tone)}">'
         f"{icon(name, 21)}</span><h3>{escape(title)}</h3><p>{escape(description)}</p></div>"
-    )
-
-
-def pipeline_art() -> None:
-    connectors = svg_image(
-        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 230" fill="none">'
-        '<path d="M70 65H180V113M290 65H180M70 180H180V113M290 180H180" '
-        'stroke="#726195" stroke-width="1" stroke-dasharray="4 5"/></svg>',
-        "art-connectors",
-    )
-    st.html(
-        '<div class="pipeline-art" role="img" aria-label="Workflow: dataset, train, evaluate and predict">'
-        '<div class="art-grid"></div><div class="art-orbit orbit-one"></div>'
-        '<div class="art-orbit orbit-two"></div>'
-        f'{connectors}<div class="art-core">'
-        f"{icon('layers', 30)}<span>MLForge</span></div>"
-        f'<div class="art-node node-data">{icon("data", 17)}<span>Dataset</span></div>'
-        f'<div class="art-node node-train">{icon("flask", 17)}<span>Train</span></div>'
-        f'<div class="art-node node-evaluate">{icon("chart", 17)}<span>Evaluate</span></div>'
-        f'<div class="art-node node-predict">{icon("spark", 17)}<span>Predict</span></div>'
-        '<span class="art-caption">One connected workflow. From CSV to prediction.</span></div>'
     )

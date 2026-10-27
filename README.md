@@ -10,7 +10,7 @@ Streamlit provides the browser interface; FastAPI exposes predictions; both call
 
 ![MLForge's redesigned workspace, with genuine zero-count empty states](docs/assets/overview.png)
 
-The interface includes a responsive dashboard, direct sample-to-experiment actions, a compact icon sidebar and consistent forms/results styling. Inter is bundled locally under the [SIL Open Font License](app/ui/assets/fonts/LICENSE.txt); the interface does not need an external font service.
+The interface uses a minimal white theme with purple accents, a responsive dashboard, direct sample-to-experiment actions, a compact icon sidebar and consistent forms/results styling. Inter is bundled locally under the [SIL Open Font License](app/ui/assets/fonts/LICENSE.txt); the interface does not need an external font service.
 
 ## Run on Windows
 

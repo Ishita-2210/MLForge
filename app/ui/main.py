@@ -7,7 +7,7 @@ import streamlit as st
 
 from app.ui.common import forge
 from app.ui.data_views import datasets, profiling
-from app.ui.design import apply_theme, brand, card_intro, icon, pipeline_art, section, topbar
+from app.ui.design import apply_theme, brand, card_intro, icon, section, topbar
 from app.ui.experiment_views import builder, details
 from app.ui.model_views import playground, registry
 from app.ui.monitor_views import monitoring
@@ -34,16 +34,14 @@ def overview() -> None:
     f.recover_jobs()
     counts = f.store.overview()
     with st.container(key="overview-hero"):
-        intro, illustration = st.columns([1.35, 1], gap="medium", vertical_alignment="center")
+        intro, action = st.columns([3, 1], gap="large", vertical_alignment="center")
         with intro:
             st.html(
-                '<div class="hero-copy"><div class="hero-eyebrow">LESS FRICTION. MORE DISCOVERY.</div>'
-                "<h1>Your next model<br><span>starts here.</span></h1>"
-                "<p>Turn your data into something useful. Explore, experiment, and ship a model "
-                "you understand. All in one workspace.</p></div>"
+                '<div class="hero-copy"><h1>Your workspace</h1>'
+                "<p>A little data. A new idea. Your next experiment starts here.</p></div>"
             )
-            primary, secondary = st.columns([1.1, 1], gap="small")
-            primary.button(
+        with action:
+            st.button(
                 "New experiment",
                 type="primary",
                 icon=":material/add:",
@@ -51,19 +49,6 @@ def overview() -> None:
                 on_click=navigate,
                 args=("Experiment builder" if counts["datasets"] else "Datasets",),
             )
-            secondary.button(
-                "View registry",
-                icon=":material/arrow_forward:",
-                use_container_width=True,
-                on_click=navigate,
-                args=("Model registry",),
-            )
-            st.html(
-                f'<div class="hero-note">{icon("cpu", 12)} CPU powered '
-                "&nbsp;·&nbsp; No API keys needed</div>"
-            )
-        with illustration:
-            pipeline_art()
     with st.container(key="overview-metrics"):
         for col, label, key in zip(
             st.columns(4),
@@ -73,15 +58,14 @@ def overview() -> None:
         ):
             col.metric(label, counts[key])
     section(
-        "Make your first move",
-        "Bring your own data, or explore with a ready-to-run synthetic dataset.",
-        "BUILT FOR EXPLORATION",
+        "Get started",
+        "Bring your own data or try a sample.",
     )
     upload, classification, regression = st.columns(3, gap="medium")
     with upload, st.container(key="start-upload"):
         card_intro(
             "upload",
-            "Bring your own data",
+            "Import your data",
             "A CSV is all you need. We’ll help you inspect the rest.",
         )
         st.button(
@@ -95,7 +79,7 @@ def overview() -> None:
         card_intro(
             "box",
             "Explore classification",
-            "Predict a category with 600 synthetic rows and mixed feature types.",
+            "Predict a category with a ready-to-run synthetic dataset.",
             "blue",
         )
         st.button(
@@ -108,8 +92,8 @@ def overview() -> None:
     with regression, st.container(key="start-regression"):
         card_intro(
             "chart",
-            "Try a regression problem",
-            "Predict a number. Compare real models on a reproducible sample.",
+            "Explore regression",
+            "Predict a number and compare models on a synthetic dataset.",
             "teal",
         )
         st.button(
@@ -121,7 +105,7 @@ def overview() -> None:
         )
     label, action = st.columns([4, 1], vertical_alignment="center")
     with label:
-        section("Recent experiments", "Your latest runs, right where you left them.")
+        section("Recent experiments")
     action.button(
         "View all runs",
         type="tertiary",
@@ -152,13 +136,13 @@ def overview() -> None:
         else:
             st.html(
                 f'<div class="empty-history"><span class="card-icon">{icon("flask", 18)}</span>'
-                "<h3>A clean slate. A little potential.</h3>"
-                "<p>Your experiments will appear here. Load a sample above to get started.</p></div>"
+                "<h3>No experiments yet</h3>"
+                "<p>Start with a dataset. Your runs will appear here.</p></div>"
             )
     st.html(
         f'<div class="workspace-footer"><span>{icon("check", 12)} '
-        "Training-only preprocessing. Honest holdout evaluation.</span>"
-        "<span>Made for curious minds. Built on scikit-learn.</span></div>"
+        "Your data, your experiments.</span>"
+        "<span>Powered by scikit-learn</span></div>"
     )
 
 
@@ -187,12 +171,12 @@ def main() -> None:
             "Workspace", list(pages), label_visibility="collapsed", key="workspace_page"
         )
         st.html(
-            f'<div class="sidebar-runtime"><div class="runtime-title">{icon("cpu", 16)}'
-            "A lighter way to ML</div><p>CPU powered. No model APIs.<br>"
+            '<div class="sidebar-runtime"><div class="runtime-title"><span class="status-dot"></span>'
+            "CPU workspace</div><p>"
             + (
-                "Use public or synthetic data.<br>Run locally to keep your history."
+                "Temporary session. Use public data."
                 if hosted_demo()
-                else "Your data stays on this computer.<br>One experiment at a time."
+                else "Your data stays on this computer."
             )
             + "</p></div>"
         )
