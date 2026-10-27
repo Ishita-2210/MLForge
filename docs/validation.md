@@ -4,7 +4,7 @@
 
 Windows 11, Intel i5-1135G7 (4 physical cores/8 logical processors), approximately 16 GB RAM; Python 3.13.3, scikit-learn 1.6.1, pandas 2.2.3, NumPy 2.2.6, SciPy 1.15.3, joblib 1.4.2. All training/inference used CPU. No external dataset or paid service was involved.
 
-**62 automated tests passed, zero failed.** The recorded full run took **20.72 seconds**. Two third-party deprecation warnings remain (Starlette's AnyIO alias and Streamlit's Altair theme API); neither failed the checks. Ruff lint and format checks passed, Python compilation/import checks passed, and a package wheel built successfully.
+**66 automated tests passed, zero failed.** The deployment validation run took **48.93 seconds**. Two third-party deprecation warnings remain (Starlette's AnyIO alias and Streamlit's Altair theme API); neither failed the checks. Ruff lint and format checks passed, Python compilation/import checks passed, and a package wheel built successfully during initial local validation. Four added tests cover hosted workspace isolation, path validation, session caps and the container entrypoint's security settings.
 
 The tests cover strict CSV parsing/limits/identity, profiling, target/config validation, preprocessing fitted only on training, disjoint group/time folds and chronology/gaps, rare-class CV fallback, bounded search, all supported model families, binary/multiclass metrics, final-test isolation, partial/all candidate failures, artifact reload/integrity/compatibility/version history, prediction feature ordering, missing/unseen values, API schema/body/host safety, monitoring retention/drift, background-process persistence, cancellation/recovery and the complete Streamlit workflow.
 
@@ -54,4 +54,10 @@ This browser run is a different dataset/configuration from the 600-row benchmark
 .\.venv\Scripts\python -m mlforge.cli --home build/reproduction smoke --task both --output build/reproduction.json
 ```
 
-Raw local logs/benchmark JSONs are under ignored `build/`. Generated datasets, SQLite databases and trained joblib files are intentionally excluded from source control. CI defines equivalent checks for Ubuntu Python 3.11/3.13 and Windows Python 3.13, but **hosted CI has not run** for this local-only project. No public repository or live deployment link is claimed. Real-data generalization, authentication/multi-user hosting and outcome-based performance monitoring remain outside this release.
+Raw local logs/benchmark JSONs are under ignored `build/`. Generated datasets, SQLite databases and trained joblib files are intentionally excluded from source control. [GitHub Actions](https://github.com/Ishita-2210/MLForge/actions) defines equivalent checks for Ubuntu Python 3.11/3.13 and Windows Python 3.13. Consult the actual run status there. Real-data generalization, authenticated durable hosting and outcome-based performance monitoring remain outside this release.
+
+## Production demo verification
+
+The public production alias **https://mlforge-nine.vercel.app** returned HTTP 200 for the application and `/_stcore/health`. An actual unauthenticated Chromium session opened the WebSocket application, uploaded the same 240-row public synthetic QA CSV, profiled it, reviewed a configuration, started a background CPU experiment, received final holdout metrics, registered the fitted pipeline and made a real Playground prediction. The synthetic input-shift action returned computed PSI/total-variation diagnostics and flagged features. No browser JavaScript errors or HTTP 5xx responses occurred.
+
+A second independent browser context showed four zero-count overview metrics, confirming it did not inherit the first visitor's datasets, experiments or registered models. This checks session separation in the deployed demo; it is not a claim of audited tenant security. The deployed workspace is temporary and the dedicated REST API remains a local option. The existing benchmark table above still reports the original local 600-row measurements, not cloud timings. Deployment QA results and screenshots are recorded under ignored `build/hosted-*`.

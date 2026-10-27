@@ -17,6 +17,9 @@ class Settings:
     max_request_bytes: int = 1024 * 1024
     max_logs: int = 1000
     retention_days: int = 30
+    max_datasets: int | None = None
+    max_experiments: int | None = None
+    max_models: int | None = None
 
     @classmethod
     def default(cls) -> Settings:

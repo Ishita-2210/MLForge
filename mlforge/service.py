@@ -45,6 +45,15 @@ class Forge:
             for record in self.store.list("dataset", 1000):
                 if record["fingerprint"] == data.fingerprint:
                     return record
+            if (
+                self.settings.max_datasets
+                and self.store.overview()["datasets"] >= self.settings.max_datasets
+            ):
+                raise ForgeError(
+                    "This temporary demo workspace has reached its dataset limit. Delete a dataset or use local mode.",
+                    "demo_limit",
+                    409,
+                )
             record = {
                 "id": uid(),
                 "name": Path(name.replace("\\", "/")).name[:100] or "dataset.csv",
@@ -106,6 +115,15 @@ class Forge:
         }
 
     def start(self, config: ExperimentConfig, background: bool = True) -> dict:
+        if (
+            self.settings.max_experiments
+            and self.store.overview()["experiments"] >= self.settings.max_experiments
+        ):
+            raise ForgeError(
+                "This temporary demo workspace has reached its experiment limit. Use local mode for further experiments.",
+                "demo_limit",
+                409,
+            )
         check = self.preflight(config)
         self.recover_jobs()
         record = {
@@ -211,6 +229,12 @@ class Forge:
             self.store.patch("experiment", key, status="cancelled", progress="Cancelled by user")
 
     def register(self, experiment_id: str, name: str) -> dict:
+        if self.settings.max_models and self.store.overview()["models"] >= self.settings.max_models:
+            raise ForgeError(
+                "This temporary demo workspace has reached its model limit. Delete a registry copy or use local mode.",
+                "demo_limit",
+                409,
+            )
         name = name.strip()
         if not name or len(name) > 100:
             raise ForgeError("Choose a model name between 1 and 100 characters")

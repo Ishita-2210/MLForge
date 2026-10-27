@@ -7,6 +7,7 @@ import streamlit as st
 from pydantic import ValidationError
 
 from app.ui.common import forge, heading, show_error
+from mlforge.hosting import hosted_demo
 from mlforge.schemas import PredictionRequest
 
 
@@ -128,6 +129,11 @@ def playground() -> None:
         except Exception as exc:
             show_error(exc)
     with st.expander("Use the same model through REST"):
+        if hosted_demo():
+            st.write(
+                "Run MLForge locally to use the dedicated REST API. This hosted interface makes real predictions through its session's registered pipeline."
+            )
+            return
         st.code(
             f"POST http://127.0.0.1:8000/predict/{model['id']}\nContent-Type: application/json\n\n"
             + json.dumps({"rows": [example_row(model)]}, indent=2),

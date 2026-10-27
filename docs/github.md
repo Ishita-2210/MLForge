@@ -1,13 +1,15 @@
-# Repository preparation
+# Repository and run options
 
-Suggested GitHub repository name: **MLForge**.
+- Repository: **https://github.com/Ishita-2210/MLForge**
+- Live demo / repository homepage: **https://mlforge-nine.vercel.app**
+- Local project folder on the original computer: **`D:\ml forge`**
+- Local UI: **http://127.0.0.1:8501**; dedicated API documentation: **http://127.0.0.1:8000/docs**
+- Local setup: [README instructions](../README.md#run-on-windows).
 
-Description: **Local CPU-first tabular ML workbench with leakage-safe experiments, Streamlit, FastAPI, SQLite tracking, a versioned model registry and input-drift diagnostics.**
+The public GitHub repository contains source, documentation, CI and genuine UI screenshots. Runtime uploads, SQLite databases, trained artifacts, logs, build output, virtual environments and deployment credentials are excluded. The repository is separate from TinyLink AI and Image Entropy Analyzer; their remotes and histories were preserved.
 
-Suggested topics: `machine-learning`, `scikit-learn`, `mlops`, `streamlit`, `fastapi`, `python`, `sqlite`, `model-registry`, `tabular-data`, `data-drift`.
+The live demo was deployed and exercised before publishing this source. It performs real training and inference with temporary per-session storage. Local mode provides persistent storage and the dedicated REST API. The GitHub About homepage and README link to the deployed app, and the hosted sidebar links back to the source and local setup.
 
-This is a standalone local Git repository using the configured user identity. The CI workflow defines actual lint, test, import and reproducible smoke commands on supported Python/OS combinations, with no hardware or cloud-service requirement. Local checks were executed; hosted CI has not run because this project has no published remote. No passing CI badge or live deployment URL is invented.
+Repository topics: `machine-learning`, `scikit-learn`, `mlops`, `streamlit`, `fastapi`, `python`, `sqlite`, `model-registry`, `tabular-data`, `data-drift`.
 
-Source inspection covers `.gitignore`, diffs, generated/private data exclusion, sample provenance and working README commands. Only publish the source/docs/CI and small genuine UI screenshots. Do not push `.venv`, `.mlforge`, SQLite files, datasets, joblib artifacts, logs or build data. Do not attach the TinyLink/Image Entropy repository's remote or force-push over existing history.
-
-The portfolio was inspected and left unchanged: adding an accurate project entry should use an actual published repository URL after publication, rather than an invented link. No paid deployment is needed; the demonstrated local web UI is sufficient.
+The CI workflow runs lint, formatting, imports, tests and classification/regression smoke checks on Linux Python 3.11/3.13 and Windows Python 3.13. [View actual CI runs](https://github.com/Ishita-2210/MLForge/actions). Local and deployed verification details are in [validation.md](validation.md). The portfolio remains unchanged.

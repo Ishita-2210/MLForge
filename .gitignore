@@ -6,7 +6,11 @@ __pycache__/
 *.egg-info/
 build/
 dist/
-.env
+.env*
+!.env.example
+.streamlit/secrets.toml
+*.sqlite3
+*.sqlite3-*
 *.db
 *.db-wal
 *.db-shm
@@ -14,3 +18,4 @@ dist/
 *.log
 playwright-report/
 test-results/
+.vercel/

@@ -7,13 +7,16 @@ import pandas as pd
 import streamlit as st
 
 from app.ui.common import choose_dataset, forge, heading, show_error
+from mlforge.hosting import hosted_demo
 
 
 def datasets() -> None:
     heading(
         "01 / Data workspace",
         "Bring your data into focus",
-        "Upload a UTF-8 CSV, or start with a reproducible CPU-friendly sample. Raw data stays on this computer.",
+        "Upload a public/synthetic CSV or load a sample. Hosted data uses temporary session storage."
+        if hosted_demo()
+        else "Upload a UTF-8 CSV, or start with a reproducible CPU-friendly sample. Raw data stays on this computer.",
     )
     f = forge()
     left, right = st.columns(2)
@@ -30,12 +33,19 @@ def datasets() -> None:
                     st.success("Synthetic sample loaded. No real-world benchmark is implied.")
                 except Exception as exc:
                     show_error(exc)
-    upload = st.file_uploader("Upload CSV · maximum 8 MiB, 10,000 rows, 60 columns", type=["csv"])
+    upload = st.file_uploader(
+        f"Upload CSV · maximum {f.settings.max_bytes // (1024 * 1024)} MiB, {f.settings.max_rows:,} rows, {f.settings.max_columns} columns",
+        type=["csv"],
+    )
     if upload is not None and st.button("Validate and save upload", type="primary"):
         try:
             record = f.ingest(upload.getvalue(), upload.name)
             st.session_state.selected_dataset = record["id"]
-            st.success("Dataset validated and saved locally. Identical content is deduplicated.")
+            st.success(
+                "Dataset validated and saved in this temporary workspace. Identical content is deduplicated."
+                if hosted_demo()
+                else "Dataset validated and saved locally. Identical content is deduplicated."
+            )
         except Exception as exc:
             show_error(exc)
     st.divider()

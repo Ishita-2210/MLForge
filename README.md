@@ -2,6 +2,10 @@
 
 A local, CPU-first workbench for **tabular classification and regression**. Take a CSV through validation, profiling, leakage-safe preprocessing, baseline/model comparison, final holdout evaluation, explainability, a versioned model registry, prediction and input-drift monitoring.
 
+**[Open the live demo](https://mlforge-nine.vercel.app)** · **[GitHub repository](https://github.com/Ishita-2210/MLForge)** · **[Run locally](#run-on-windows)**
+
+The live demo runs real CPU training and prediction in a temporary browser-session workspace. Models and history can disappear on restart or reconnection. Use synthetic/public data there. Run locally for private datasets, persistent history and the dedicated REST API. The hosted sidebar includes a downloadable local setup guide.
+
 Streamlit provides the browser interface; FastAPI exposes predictions; both call the same independently testable Python services. SQLite stores history and metadata. The complete fitted scikit-learn pipeline is persisted with each model. No GPU, paid service, account, external database, model download or cloud inference is required.
 
 ![MLForge's fresh local workspace, with genuine zero-count empty states](docs/assets/overview.png)
@@ -9,6 +13,12 @@ Streamlit provides the browser interface; FastAPI exposes predictions; both call
 ## Run on Windows
 
 From PowerShell (the requested project folder is **`D:\ml forge`**):
+
+The project already exists at that path on the original computer. On a different computer, clone it first:
+
+```powershell
+git clone https://github.com/Ishita-2210/MLForge.git 'D:\ml forge'
+```
 
 ```powershell
 cd 'D:\ml forge'
@@ -185,7 +195,15 @@ The smoke command generates both 600-row synthetic samples, trains baseline plus
 
 See [actual validation and benchmark results](docs/validation.md). The test suite covers ingestion, feature/schema validation, preprocessing leakage, group/time boundaries, model comparison/failures, final-test isolation, artifact reload/integrity/versioning, API errors/body limits, background jobs/cancellation/recovery, monitoring, and a complete Streamlit interaction workflow.
 
-[CI](.github/workflows/ci.yml) defines Linux Python 3.11/3.13 and Windows Python 3.13 jobs, with lint/format/import checks, tests, and classification/regression smoke runs. It requires no GPU, external services or credentials. Hosted CI has not run for this new local project; no passing badge is claimed.
+[CI](https://github.com/Ishita-2210/MLForge/actions) runs Linux Python 3.11/3.13 and Windows Python 3.13 jobs, with lint/format/import checks, tests, and classification/regression smoke runs. It requires no GPU, external services or credentials. The local suite currently has **66 passing tests**; see the Actions page for hosted run status.
+
+## Hosted demo and deployment
+
+The production demo is **https://mlforge-nine.vercel.app**, built with `Dockerfile.vercel` on Vercel's Container runtime. `scripts/serve_hosted.py` starts Streamlit on the container port; `scripts/dev.py` remains the local UI/API launcher. No local artifacts, uploaded datasets, credentials or virtual environment are included in the image.
+
+Hosted limits are **2 MiB / 2,000 rows / 30 columns / 20 selected features**, with at most **5 datasets, 8 experiments and 8 active registered models** per session. Each Streamlit session receives a separate generated workspace under temporary server storage. This is a public demonstration without user accounts or durable storage. Training and predictions use the same core services as local mode; the dedicated FastAPI server is available locally. Cold starts and connection time limits can interrupt a demo session.
+
+To redeploy from a checkout with your own Vercel account, install/sign in to the Vercel CLI, link to your own project and run `vercel deploy --prod`. Container availability and resource limits depend on the hosting account. Keep the local API bound to loopback. See [hosting and storage boundaries](docs/security.md).
 
 ## Layout and limits
 

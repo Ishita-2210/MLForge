@@ -1,20 +1,26 @@
 from __future__ import annotations
 
+import uuid
 from pathlib import Path
 
 import streamlit as st
 
 from mlforge.config import Settings
 from mlforge.errors import ForgeError
+from mlforge.hosting import hosted_demo, hosted_settings
 from mlforge.service import Forge
 
 
-@st.cache_resource
-def _forge(home: str) -> Forge:
-    return Forge(Settings(Path(home)))
+@st.cache_resource(ttl=3600, max_entries=32)
+def _forge(home: str, demo: bool = False, session: str = "") -> Forge:
+    return Forge(hosted_settings(Path(home), session) if demo else Settings(Path(home)))
 
 
 def forge() -> Forge:
+    if hosted_demo():
+        if "hosted_workspace" not in st.session_state:
+            st.session_state.hosted_workspace = uuid.uuid4().hex
+        return _forge(str(Settings.default().home), True, st.session_state.hosted_workspace)
     return _forge(str(Settings.default().home))
 
 
